@@ -4,6 +4,10 @@ const port = 3001
 const path = require('path')
 const db = require('./db.json')
 const fs = require('fs')
+const morgan = require('morgan')
+
+morgan.token('body', (req, res) => JSON.stringify(req.body))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
