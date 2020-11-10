@@ -5,6 +5,7 @@ const path = require('path')
 const db = require('./db.json')
 const fs = require('fs')
 const morgan = require('morgan')
+const cors = require('cors')
 
 morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
@@ -12,20 +13,23 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+app.use(cors())
+
 app.get('/api/persons', (req, res) => {
-    res.json(db)
+    return res.status(200).json(db)
 })
 
 app.get('/api/persons/:id', (req, res) => {
     const id = parseInt(req.params.id)
     const person = db.find(person => person.id === id)
-    res.json(person)
+    return res.status(200).json(person)
 })
 
 app.delete('/api/persons/:id', (req, res) => {
     const id = parseInt(req.params.id)
     const users = db.filter(person => person.id !== id)
     fs.writeFileSync('db.json', JSON.stringify(users))
+    return res.status(202).json({success: true})
 })
 
 app.post('/api/persons', (req, res) => {
@@ -48,13 +52,12 @@ app.post('/api/persons', (req, res) => {
         })
 
         fs.writeFileSync('db.json', JSON.stringify(json))
+        return res.status(201).json({success: true})
     })
-
-    console.log(req.body)
 })
 
 app.get('/info', (req, res) => {
-    res.sendFile(path.join(__dirname + '/public/info.html'))
+    return res.sendFile(path.join(__dirname + '/public/info.html'))
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}`))
