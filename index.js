@@ -57,7 +57,9 @@ app.post('/api/persons', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-    return res.sendFile(path.join(__dirname + '/public/info.html'))
+    return res.send(`<p>Phonebook has info for ${db.length} people.</p><p>${Date()}</p>`)
 })
+
+app.use(express.static('build'))
 
 app.listen(process.env.PORT || port, () => console.log(`App listening on port ${port}`))
