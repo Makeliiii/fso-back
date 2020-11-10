@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Info</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"> </script>
+</head>
+<script>
+    $(function() {
+        $.get('http://localhost:3001/api/persons', function(data) {
+            let count = 0
+            for (person of data) {
+                count++
+            }
+
+            const date = new Date
+            $("#phonebook").html(`<p>Phonebook has info for ${count} people.</p><p>${date}</p>`)
+        })
+    })
+</script>
+<body>
+    <div id="phonebook">
+    </div>
+</body>
+</html>
