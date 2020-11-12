@@ -69,4 +69,13 @@ personsRouter.put('/persons/:id', async (req, res) => {
         })
 })
 
+personsRouter.delete('/persons/:id', async (req, res) => {
+    await Person.deleteOne({ _id: req.params.id })
+        .then(person => {
+            return res.status(200).json({
+                status: 'deleted'
+            })
+        })
+})
+
 module.exports = personsRouter

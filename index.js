@@ -24,13 +24,6 @@ const info = require('./routes/info')
 app.use('/api', persons)
 app.use(info)
 
-/*app.delete('/api/persons/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const users = db.filter(person => person.id !== id)
-    fs.writeFileSync('db.json', JSON.stringify(users))
-    return res.status(202).json({success: true})
-})*/
-
 // serve react app
 app.use(express.static('build'))
 
