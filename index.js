@@ -21,18 +21,12 @@ app.use(cors())
 
 app.use('/api', persons)
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const person = db.find(person => person.id === id)
-    return res.status(200).json(person)
-})
-
-app.delete('/api/persons/:id', (req, res) => {
+/*app.delete('/api/persons/:id', (req, res) => {
     const id = parseInt(req.params.id)
     const users = db.filter(person => person.id !== id)
     fs.writeFileSync('db.json', JSON.stringify(users))
     return res.status(202).json({success: true})
-})
+})*/
 
 app.get('/info', (req, res) => {
     return res.send(`<p>Phonebook has info for ${db.length} people.</p><p>${Date()}</p>`)
