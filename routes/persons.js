@@ -1,17 +1,17 @@
 const express = require('express')
-const router = express.Router()
+const personsRouter = express.Router()
 const Person = require('../models/Person')
 
-router.get('/persons', async (req, res) => {
+personsRouter.get('/persons', async (req, res) => {
     await Person.find({})
         .then(persons => {
-            res.status(200).json({
+            return res.status(200).json({
                 persons
             })
         })
 })
 
-router.get('/persons/:id', async (req, res) => {
+personsRouter.get('/persons/:id', async (req, res) => {
     await Person.find({ _id: req.params.id })
         .then(person => {
             if (!person.length) {
@@ -30,7 +30,7 @@ router.get('/persons/:id', async (req, res) => {
         })
 })
 
-router.post('/persons', async (req, res) => {
+personsRouter.post('/persons', async (req, res) => {
     const { name, number } = req.body
     const person = new Person({
         name,
@@ -44,10 +44,29 @@ router.post('/persons', async (req, res) => {
             })
         })
         .catch(err => {
-            res.status(400).json({
+            return res.status(400).json({
                 error: err
             })
         })
 })
 
-module.exports = router
+personsRouter.put('/persons/:id', async (req, res) => {
+    const { name, number } = req.body
+    let person = await Person.findOne({ _id: req.params.id })
+    person.name = name
+    person.number = number
+
+    await person.save()
+        .then(person => {
+            return res.status(200).json({
+                person
+            })
+        })
+        .catch(err => {
+            return res.status(400).json({
+                error: err
+            })
+        })
+})
+
+module.exports = personsRouter
