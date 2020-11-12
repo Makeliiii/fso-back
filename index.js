@@ -1,25 +1,28 @@
 const express = require('express')
 const app = express()
 const port = 3001
-const db = require('./db.json')
-const fs = require('fs')
 const morgan = require('morgan')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const persons = require('./routes/persons')
-
+// morgan logging
 morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
+// cors and body parser
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.use(cors())
+// import routes
+const persons = require('./routes/persons')
+const info = require('./routes/info')
 
+// serve routes
 app.use('/api', persons)
+app.use(info)
 
 /*app.delete('/api/persons/:id', (req, res) => {
     const id = parseInt(req.params.id)
@@ -28,13 +31,10 @@ app.use('/api', persons)
     return res.status(202).json({success: true})
 })*/
 
-app.get('/info', (req, res) => {
-    return res.send(`<p>Phonebook has info for ${db.length} people.</p><p>${Date()}</p>`)
-})
-
+// serve react app
 app.use(express.static('build'))
 
-
+// connect to mongodb
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(res => {
         console.log('MongoDB connection succesful.')
@@ -43,4 +43,5 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
         console.log('Error connecting to MongoDB: ', err.message)
     })
     
+// server listener
 app.listen(process.env.PORT || port, () => console.log(`App listening on port ${port}`))
